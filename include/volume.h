@@ -9,5 +9,6 @@
 
 void volume_init();
 
+uint8_t volume_get();
 
 #endif //MC_LEERTAAK_2_THEREMIN_VOLUME_H

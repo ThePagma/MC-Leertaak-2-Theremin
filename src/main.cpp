@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include "volume.h"
 
-static volatile uint8_t volume = 0;
 
 
 void setup() {
@@ -10,11 +9,9 @@ void setup() {
     sei();
 }
 
-ISR(ADC_vect) {
-    volume = ADCH;
-}
+
 
 void loop() {
-    Serial.println(volume);
+    Serial.println(volume_get());
     delay(100);
 }
