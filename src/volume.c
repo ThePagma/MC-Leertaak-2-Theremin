@@ -2,7 +2,8 @@
 // Created by Deeq on 25/10/2026.
 //
 
-#include <Arduino.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
 #include "../include/volume.h"
 
 static volatile uint8_t volume = 0;

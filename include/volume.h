@@ -5,9 +5,9 @@
 #ifndef MC_LEERTAAK_2_THEREMIN_VOLUME_H
 #define MC_LEERTAAK_2_THEREMIN_VOLUME_H
 
-#include <Arduino.h>
+#include <stdint.h>
 
-void volume_init();
+void volume_init(void);
 
 uint8_t volume_get();
 
