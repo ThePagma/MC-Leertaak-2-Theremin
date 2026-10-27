@@ -8,13 +8,7 @@ int main() {
         buzzer_init();
         sei();
 
-        DDRB |= (1 << DDB5);
-
         while(1) {
-                if (volume_get() > 127) {
-                        PORTB |= (1 << PORTB5);
-                } else {
-                        PORTB &= ~(1 << PORTB5);
-                }
+                buzzer_setVolume(volume_get());
         }
 }

@@ -9,4 +9,6 @@
 
 void buzzer_init(void);
 
+void buzzer_setVolume(uint8_t volume);
+
 #endif //MC_LEERTAAK_2_THEREMIN_BUZZER_H

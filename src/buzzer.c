@@ -12,3 +12,7 @@ void buzzer_init(void) {
     TCCR2B = (1 << CS22) | (1 << CS21) | (1 << CS20);
     OCR2B = 128;
 }
+
+void buzzer_setVolume(uint8_t volume) {
+    OCR2B = volume;
+}
