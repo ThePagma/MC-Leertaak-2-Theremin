@@ -16,7 +16,6 @@ int main() {
 
     while(1) {
         buzzer_setVolume(volume_get());
-        filter_setSize(5); // test waarde
         frequency_update();
         if (frequency_hasNewMeasurement()) {
             uint16_t distance = frequency_getDistance();
@@ -24,8 +23,12 @@ int main() {
             buzzer_setFrequency(frequency_calculate(distance));
         }
 
-        if (buttons_plusPressed()) { filter_setSize(15); }   // TEST
-        if (buttons_minPressed())  { filter_setSize(1); }    // TEST
+        if (buttons_plusPressed()) {
+            filter_setSize(filter_getSize() + 2);
+        }
+        if (buttons_minPressed()) {
+            filter_setSize(filter_getSize() - 2);
+        }
     }
 
 }

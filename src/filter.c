@@ -53,7 +53,7 @@ static int compareAge(const void *a, const void *b) {
     return 0;        // ze zijn gelijk
 }
 
-void filter_setSize(uint8_t newSize) {
+void filter_setSize(int16_t newSize) {
     if (newSize < FILTER_MIN) {
         newSize = FILTER_MIN;
     }else if (newSize > FILTER_MAX) {
@@ -119,4 +119,8 @@ uint16_t filter_apply(uint16_t value) {
     qsort(samples, filterSize, sizeof(struct Sample), compareSamples);
 
     return samples[filterSize / 2].value;   // de middelste meting is de mediaan
+}
+
+uint8_t filter_getSize(void) {
+    return filterSize;
 }

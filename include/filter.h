@@ -9,6 +9,7 @@
 
 void filter_init(uint8_t size);
 uint16_t filter_apply(uint16_t value);
-void filter_setSize(uint8_t newSize);
+void filter_setSize(int16_t newSize);
+uint8_t filter_getSize(void);
 
 #endif //MC_LEERTAAK_2_THEREMIN_FILTER_H
