@@ -8,18 +8,21 @@
 
     static volatile uint16_t pulseLength = 0;
     static volatile uint8_t captureFlag = 0;
-    enum PingState { START_PULSE, END_PULSE, WAIT };
+    enum PingState { START_PULSE, END_PULSE, WAIT, PAUSE};
     static enum PingState state = START_PULSE;
     static uint16_t startTime = 0;
 
+    #define MEASURE_INTERVAL 20000   // 20 ms, bij 0,5 µs per stapje
+    #define NO_ECHO 0xFFFF   // geen echo binnen 32,8 ms: hand buiten bereik
+
     void frequency_init(void) {
-        DDRB |= (1 << DDB5);
+        DDRB |= (1 << DDB5); // test code
 
         DDRB |= (1 << DDB1);
         DDRB &= ~(1 << DDB0);
         TCCR1A = 0;
         TCCR1B = (1 << ICES1) | (1 << CS11);
-        TIMSK1 |= (1 << ICIE1);
+        TIMSK1 |= (1 << ICIE1) | (1 << TOIE1);
     }
 
     ISR(TIMER1_CAPT_vect) {
@@ -33,6 +36,14 @@
             TCCR1B |= (1 << ICES1);
         }
         TIFR1 = (1 << ICF1);
+    }
+    // in geval dat hand buiten bereik is
+    ISR(TIMER1_OVF_vect) {
+        pulseLength = NO_ECHO;
+        captureFlag = 1;
+        TCCR1B |= (1 << ICES1);
+        TIFR1 = (1 << ICF1);
+
     }
 
     void frequency_update(void) {
@@ -52,6 +63,11 @@
             case WAIT:
                 if (captureFlag == 1) {
                     captureFlag = 0;
+                    state = PAUSE;
+                }
+                break;
+            case PAUSE:
+                if (TCNT1 >= MEASURE_INTERVAL) {
                     state = START_PULSE;
                 }
                 break;
