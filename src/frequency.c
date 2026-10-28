@@ -13,6 +13,8 @@
     enum PingState { START_PULSE, END_PULSE, WAIT, PAUSE};
     static enum PingState state = START_PULSE;
     static uint16_t startTime = 0;
+    static uint16_t lastDistance = 0; // de laatste afstand in cm
+    static uint8_t newMeasurement = 0; // 1 als er een nieuwe afstand is
 
     #define MEASURE_INTERVAL 20000   // 10 ms, bij 0,5 µs per stapje
     #define NO_ECHO 0xFFFF   // geen echo binnen 32,8 ms: hand buiten bereik
@@ -63,6 +65,8 @@
                 break;
             case WAIT:
                 if (captureFlag == 1) {
+                    lastDistance = pulseLength / 116; // pulse length is timer stap 1 stap is 0.5 microseconde dus inplaats van / 58 doe ik / 116
+                    newMeasurement = 1;
                     captureFlag = 0;
                     state = PAUSE;
                 }
@@ -75,8 +79,13 @@
         }
     }
 
+    uint8_t frequency_hasNewMeasurement(void) {
+        return newMeasurement;
+    }
+
     uint16_t frequency_getDistance(void) {
-        return pulseLength / 116; // pulse length is timer stap 1 stap is 0.5 microseconde dus inplaats van / 58 doe ik / 116
+        newMeasurement = 0;
+        return lastDistance;
     }
 
     uint16_t frequency_calculate(uint16_t distance) {
@@ -84,8 +93,4 @@
             distance = DISTANCE_MAX;
         }
         return FREQ_MAX - (uint32_t)(FREQ_MAX - FREQ_MIN) * distance / DISTANCE_MAX;
-    }
-
-    uint16_t frequency_getPulseLength(void) {
-        return pulseLength;
     }

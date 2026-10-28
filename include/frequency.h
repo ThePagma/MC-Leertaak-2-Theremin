@@ -9,8 +9,8 @@
 
 void frequency_init(void);
 void frequency_update(void);
-uint16_t frequency_getPulseLength(void);
 uint16_t frequency_getDistance(void);
 uint16_t frequency_calculate(uint16_t distance);
+uint8_t frequency_hasNewMeasurement();
 
 #endif //MC_LEERTAAK_2_THEREMIN_FREQUENCY_H
