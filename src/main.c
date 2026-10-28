@@ -5,6 +5,7 @@
 #include "frequency.h"
 #include "filter.h"
 #include "buttons.h"
+#include "seven-seg.h"
 
 int main() {
     volume_init();
@@ -12,8 +13,10 @@ int main() {
     frequency_init();
     filter_init(5);
     buttons_init();
+    sevenseg_init();
     sei();
 
+    sevenseg_showHex(filter_getSize());
     while(1) {
         buzzer_setVolume(volume_get());
         frequency_update();
@@ -25,9 +28,11 @@ int main() {
 
         if (buttons_plusPressed()) {
             filter_setSize(filter_getSize() + 2);
+            sevenseg_showHex(filter_getSize());
         }
         if (buttons_minPressed()) {
             filter_setSize(filter_getSize() - 2);
+            sevenseg_showHex(filter_getSize());
         }
     }
 
