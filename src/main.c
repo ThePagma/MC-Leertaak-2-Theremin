@@ -4,12 +4,14 @@
 #include "buzzer.h"
 #include "frequency.h"
 #include "filter.h"
+#include "buttons.h"
 
 int main() {
     volume_init();
     buzzer_init();
     frequency_init();
     filter_init(5);
+    buttons_init();
     sei();
 
     while(1) {
@@ -21,6 +23,9 @@ int main() {
             distance = filter_apply(distance);
             buzzer_setFrequency(frequency_calculate(distance));
         }
+
+        if (buttons_plusPressed()) { filter_setSize(15); }   // TEST
+        if (buttons_minPressed())  { filter_setSize(1); }    // TEST
     }
 
 }
