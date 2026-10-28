@@ -4,11 +4,12 @@
 #include "buzzer.h"
 
 int main() {
-        volume_init();
-        buzzer_init();
-        sei();
+    volume_init();
+    buzzer_init();
+    sei();
 
-        while(1) {
-                buzzer_setVolume(volume_get());
-        }
+    while(1) {
+      buzzer_setVolume(volume_get());
+      buzzer_setFrequency(5000);
+    }
 }
