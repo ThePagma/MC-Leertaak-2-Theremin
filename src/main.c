@@ -21,6 +21,7 @@ int main() {
         buzzer_setVolume(volume_get());
         frequency_update();
         if (frequency_hasNewMeasurement()) {
+            buttons_tick();
             uint16_t distance = frequency_getDistance();
             distance = filter_apply(distance);
             buzzer_setFrequency(frequency_calculate(distance));

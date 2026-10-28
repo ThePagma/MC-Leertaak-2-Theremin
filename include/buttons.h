@@ -7,6 +7,7 @@
 #include <stdint.h>
 
 void buttons_init(void);
+void buttons_tick(void);
 uint8_t buttons_plusPressed(void);
 uint8_t buttons_minPressed(void);
 
