@@ -11,8 +11,8 @@ int main() {
     sei();
 
     while(1) {
-      buzzer_setVolume(volume_get());
-      frequency_update();
-      buzzer_setFrequency(frequency_getPulseLength() / 5);
+        buzzer_setVolume(volume_get());
+        frequency_update();
+        buzzer_setFrequency(frequency_calculate(frequency_getDistance()));
     }
 }

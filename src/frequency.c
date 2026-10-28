@@ -5,6 +5,8 @@
     #include <avr/io.h>
     #include <avr/interrupt.h>
     #include "../include/frequency.h"
+    #include "../include/buzzer.h"
+
 
     static volatile uint16_t pulseLength = 0;
     static volatile uint8_t captureFlag = 0;
@@ -12,12 +14,11 @@
     static enum PingState state = START_PULSE;
     static uint16_t startTime = 0;
 
-    #define MEASURE_INTERVAL 20000   // 20 ms, bij 0,5 µs per stapje
+    #define MEASURE_INTERVAL 20000   // 10 ms, bij 0,5 µs per stapje
     #define NO_ECHO 0xFFFF   // geen echo binnen 32,8 ms: hand buiten bereik
+    #define DISTANCE_MAX 65
 
     void frequency_init(void) {
-        DDRB |= (1 << DDB5); // test code
-
         DDRB |= (1 << DDB1);
         DDRB &= ~(1 << DDB0);
         TCCR1A = 0;
@@ -30,13 +31,13 @@
             TCNT1 = 0;
             TCCR1B &= ~(1 << ICES1);
         }else {
-            PORTB ^= (1 << PORTB5);   // TEST: LED omdraaien bij elke meting
             pulseLength = ICR1;
             captureFlag = 1;
             TCCR1B |= (1 << ICES1);
         }
         TIFR1 = (1 << ICF1);
     }
+
     // in geval dat hand buiten bereik is
     ISR(TIMER1_OVF_vect) {
         pulseLength = NO_ECHO;
@@ -72,6 +73,17 @@
                 }
                 break;
         }
+    }
+
+    uint16_t frequency_getDistance(void) {
+        return pulseLength / 116; // pulse length is timer stap 1 stap is 0.5 microseconde dus inplaats van / 58 doe ik / 116
+    }
+
+    uint16_t frequency_calculate(uint16_t distance) {
+        if (distance > DISTANCE_MAX) {
+            distance = DISTANCE_MAX;
+        }
+        return FREQ_MAX - (uint32_t)(FREQ_MAX - FREQ_MIN) * distance / DISTANCE_MAX;
     }
 
     uint16_t frequency_getPulseLength(void) {
