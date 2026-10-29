@@ -21,17 +21,17 @@ void lcd_init(void) {
     HD44780_PCF8574_DisplayOn(LCD_ADDRESS);
     HD44780_PCF8574_DisplayClear(LCD_ADDRESS);
 }
-
+// tekst in het engels want anders past het niet
 void lcd_showValues(uint16_t distance, uint16_t frequency) {
     char text[24];
 
     if (distance > DISTANCE_SHOW_MAX) {
-        snprintf(text, sizeof(text), "Afstand: --");   // hand buiten bereik
+        snprintf(text, sizeof(text), "Distance: --");   // hand buiten bereik
     } else {
-        snprintf(text, sizeof(text), "Afstand: %ucm", distance);
+        snprintf(text, sizeof(text), "Distance: %ucm", distance);
     }
     lcd_writeLine(0, text);
 
-    snprintf(text, sizeof(text), "frequentie:%4uHz", frequency);
+    snprintf(text, sizeof(text), "frequency:%4uHz", frequency);
     lcd_writeLine(1, text);
 }

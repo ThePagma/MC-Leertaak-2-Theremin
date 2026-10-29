@@ -10,7 +10,7 @@ void buzzer_init(void) {
     DDRD |= (1 << DDD3);
     TCCR2A = (1 << COM2B1) | (1 << WGM21) | (1 << WGM20);
     TCCR2B = (1 << CS20);
-    OCR2B = 128; // volume
+    OCR2B = 128; // start volume
 
     TCCR0A = (1 << WGM01);
     TCCR0B = (1 << CS02);
