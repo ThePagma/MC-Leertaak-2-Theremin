@@ -45,12 +45,12 @@ static int compareAge(const void *a, const void *b) {
     const struct Sample *sb = b;
 
     if (sa->age < sb->age) {
-        return -1;   // sa hoort vóór sb
+        return -1;   // sa hoort voor sb
     }
     if (sa->age > sb->age) {
-        return 1;    // sa hoort ná sb
+        return 1;    // sa hoort na sb
     }
-    return 0;        // ze zijn gelijk
+    return 0;        // zijn gelijk
 }
 
 void filter_setSize(int16_t newSize) {
@@ -61,7 +61,7 @@ void filter_setSize(int16_t newSize) {
     }
 
     if (newSize == filterSize) {
-        return;   // niets te doen
+        return;   // hoeft niks te doen
     }
 
     if (newSize < filterSize && samples != NULL) {
@@ -74,7 +74,7 @@ void filter_setSize(int16_t newSize) {
     }
     samples = newSamples;
 
-    // nieuwe plekken vullen (alleen bij groter maken)
+    // nieuwe plekken vullen bij groter maken
     for (uint8_t i = filterSize; i < newSize; i++) {
         samples[i].value = lastValue;
         samples[i].age = 0;
@@ -87,15 +87,15 @@ void filter_setSize(int16_t newSize) {
 static void filter_add(uint16_t value) {
     lastValue = value;
     if (samples == NULL) {
-        return;   // niets om in te bewaren
+        return;
     }
 
-    // 1. alle metingen een stapje ouder maken
+
     for (uint8_t i = 0; i < filterSize; i++) {
         samples[i].age = samples[i].age + 1;
     }
 
-    // 2. de oudste meting zoeken
+    // de oudste meting zoeken
     uint8_t oldest = 0;
     for (uint8_t i = 1; i < filterSize; i++) {
         if (samples[i].age > samples[oldest].age) {
@@ -103,7 +103,7 @@ static void filter_add(uint16_t value) {
         }
     }
 
-    // 3. de oudste vervangen door de nieuwe meting
+    // oudste vervangen door de nieuwe meting
     samples[oldest].value = value;
     samples[oldest].age = 0;
 }
@@ -112,10 +112,9 @@ uint16_t filter_apply(uint16_t value) {
     filter_add(value);
 
     if (samples == NULL) {
-        return value;   // optie A: geen geheugen, dus de meting ongefilterd doorgeven
+        return value;
     }
 
-    // sorteer op value; compareSamples zonder () = function pointer
     qsort(samples, filterSize, sizeof(struct Sample), compareSamples);
 
     return samples[filterSize / 2].value;   // de middelste meting is de mediaan

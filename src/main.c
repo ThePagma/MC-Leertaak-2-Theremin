@@ -8,7 +8,7 @@
 #include "seven-seg.h"
 #include "lcd.h"
 
-#define LCD_UPDATE_TICKS 20   // LCD hooguit elke 20 metingen (ongeveer 200 ms) bijwerken
+#define LCD_UPDATE_TICKS 20   // elke elke 20 loops instellen
 
 int main(void) {
     volume_init();
@@ -16,29 +16,28 @@ int main(void) {
     frequency_init();
     filter_init(5);
     buttons_init();
-    lcd_init();        // eerst het LCD: deze library zet de I2C-bus op 200 kHz
-    sevenseg_init();   // daarna de bus op 100 kHz, die het 7-segmentendisplay nodig heeft
+    lcd_init();
+    sevenseg_init();
     sei();
 
     sevenseg_showHex(filter_getSize());
 
     uint8_t lcdTicks = 0;
-    uint16_t shownDistance = 0xFFFF;    // nog niets getoond: de eerste keer altijd bijwerken
+    uint16_t shownDistance = 0xFFFF;
     uint16_t shownFrequency = 0xFFFF;
 
     while (1) {
         buzzer_setVolume(volume_get());
-        frequency_update();
+        frequency_update(); // meet ultrasone waarde
 
         if (frequency_hasNewMeasurement()) {
-            buttons_tick();   // elke meting duurt ongeveer 10 ms: tijdbasis voor het ontdenderen
+            buttons_tick();   // elke meting als timer voor wanneer debounce voorbij is
 
             uint16_t distance = filter_apply(frequency_getDistance());
             uint16_t frequency = frequency_calculate(distance);
             buzzer_setFrequency(frequency);
 
-            // LCD alleen bijwerken als het tijd is én als er iets veranderd is,
-            // want elke update houdt de main-loop ongeveer 20 ms bezig
+            // lcd wordt alleen bijwerken als het tijd is en als er iets veranderd is
             lcdTicks++;
             if (lcdTicks >= LCD_UPDATE_TICKS) {
                 lcdTicks = 0;
@@ -50,6 +49,7 @@ int main(void) {
             }
         }
 
+        // filter instellen en 9 seg updaten
         if (buttons_plusPressed()) {
             filter_setSize(filter_getSize() + 2);
             sevenseg_showHex(filter_getSize());

@@ -19,11 +19,12 @@ void buttons_init(void) {
     PCMSK2 |= (1 << PCINT20) | (1 << PCINT21);  // alleen PD4 en PD5 doen mee
 }
 
+// als knop wordt ingedruk zet flag om hoog en de knoppen uit
 ISR(PCINT2_vect) {
-    if (!(PIND & (1 << PIND4))) {   // pin is ingedrukt
+    if (!(PIND & (1 << PIND4))) {
         plusFlag = 1;
     }
-    if (!(PIND & (1 << PIND5))) {   // pin is ingedrukt
+    if (!(PIND & (1 << PIND5))) {
         minFlag = 1;
     }
     // knoppen uit zetten voor debounce
@@ -31,15 +32,14 @@ ISR(PCINT2_vect) {
     debouncing = 1;
 }
 
+// wacht aantaal ticks om debouncing te voor komen
 void buttons_tick(void) {
     if (debouncing) {
         debounceCount++;
         if (debounceCount >= DEBOUNCE_TICKS) {
             debounceCount = 0;
             debouncing = 0;
-            /* wis de interruptvlag PCIF2 in register PCIFR */
             PCIFR = (1 << PCIF2);
-            /* zet PCINT20 en PCINT21 in PCMSK2 weer op 1 */
             PCMSK2 |= (1 << PCINT20) | (1 << PCINT21);
         }
     }
